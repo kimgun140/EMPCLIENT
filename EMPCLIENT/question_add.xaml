@@ -7,11 +7,18 @@
         mc:Ignorable="d"
         Title="question_add" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="question_add_btn" TextWrapping="Wrap" Text="추가할 단어" Width="120" Margin="322,98,358,268" />
+        <TextBox x:Name="question_add_btn" TextWrapping="Wrap" Text="추가할 단어" Width="120" Margin="122,276,558,90" />
         <Button x:Name="word_add" Content="단어 추가" Margin="506,276,231,126" Click="Button_Click"/>
-        <Button Content="미리보기" Margin="246,281,485,121" Click="Button_Click_1"/>
+        <Button Content="미리보기" Margin="366,287,366,115" Click="Button_Click_1"/>
         <TextBox TextWrapping="Wrap" Text="문제관리 창" Width="120" Margin="340,0,340,380" />
-        <TextBox x:Name="testbox" TextWrapping="Wrap" Text="TextBox" Width="120" Margin="59,0,621,0"/>
+        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="31,77,50,225">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="단어" Width="100"/>
+                    <GridViewColumn Header="뜻"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 </Window>

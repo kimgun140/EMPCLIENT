@@ -34,7 +34,7 @@ namespace EMPCLIENT
             public string word { get; set; }
             public string meaning { get; set; }
         }
-        List<MyData> data_list;
+        List<MyData> data_list ;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -66,7 +66,7 @@ namespace EMPCLIENT
                 send_message = "문제추가종료";
                 data = null;
                 data = Encoding.UTF8.GetBytes(send_message);
-                stream.Write(data, 0, data.Length); 
+                stream.Write(data, 0, data.Length);
 
 
             }
@@ -95,13 +95,16 @@ namespace EMPCLIENT
             data = null;
             data = new byte[300];
             string responses = "";
-            if (responses == "전송종료")
+
+
+            while (true)
             {
                 MyData myData = new MyData();
 
                 int bytes = stream.Read(data, 0, data.Length);
+                responses = Encoding.UTF8.GetString(data, 0, bytes);
 
-                responses = Encoding.UTF8.GetString(data, 0, bytes); // 여기서 json 형식으로 데이터 받기
+                // 여기서 json 형식으로 데이터 받기
                 JObject jObject = JObject.Parse(responses);
 
                 myData.word = responses;
@@ -113,9 +116,9 @@ namespace EMPCLIENT
                 //Console.WriteLine(jObject[send_message]); // 검색한 단어의 뜻 
                 //testbox.Text += "검색한 단어:" + responses + "\n";
                 //testbox.Text += "단어의 뜻: " + jObject[send_message] + "\n";
-
-
             }
+
+
             //JArray jArray = (JArray)jObject["realtimePositionList"];
 
             //if (jArray != null)
