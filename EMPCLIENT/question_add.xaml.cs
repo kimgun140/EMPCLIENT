@@ -41,11 +41,6 @@ namespace EMPCLIENT
             NetworkStream stream = MainPage.client.GetStream();
             //question_add.Text;
 
-
-
-
-
-
             // 문제추가 시그널 보내기
             string send_message = "문제추가";
 
@@ -62,11 +57,12 @@ namespace EMPCLIENT
                 data = Encoding.UTF8.GetBytes(send_message);
                 stream.Write(data, 0, data.Length);
                 Thread.Sleep(100);
-                //a문제추가 종료 시그널 보내기 
-                send_message = "문제추가종료";
-                data = null;
-                data = Encoding.UTF8.GetBytes(send_message);
-                stream.Write(data, 0, data.Length);
+                // 이거는 반복을 할 필요가 없네 한번만 보내면 되니까 
+                ////a문제추가 종료 시그널 보내기 
+                //send_message = "문제추가종료";
+                //data = null;
+                //data = Encoding.UTF8.GetBytes(send_message);
+                //stream.Write(data, 0, data.Length);
 
 
             }
