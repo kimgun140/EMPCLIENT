@@ -1,0 +1,22 @@
+﻿<Window x:Class="EMPCLIENT.grade_show"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EMPCLIENT"
+        mc:Ignorable="d"
+        Title="grade_show" Height="450" Width="800">
+    <Grid>
+        <TextBox x:Name="user_id" TextWrapping="Wrap" Text="그래프 그릴 고객id" Width="120" Margin="413,330,267,55"  />
+        <Button Content="그래프 작성버튼" Margin="583,320,76,56" Click="Button_Click"/>
+        <ListView x:Name="score_listview" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="26,35,439,242">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="아이디" DisplayMemberBinding="{Binding ID}" Width="100"/>
+                    <GridViewColumn Header="점수" DisplayMemberBinding="{Binding SCORE}" Width="100"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</Window>
