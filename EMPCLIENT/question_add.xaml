@@ -7,15 +7,15 @@
         mc:Ignorable="d"
         Title="question_add" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="question_add_btn" TextWrapping="Wrap" Text="추가할 단어" Width="120" Margin="122,276,558,90" />
-        <Button x:Name="word_add" Content="단어 추가" Margin="506,276,231,126" Click="Button_Click"/>
-        <Button Content="미리보기" Margin="366,287,366,115" Click="Button_Click_1"/>
-        <TextBox TextWrapping="Wrap" Text="문제관리 창" Width="120" Margin="340,0,340,380" />
-        <ListView d:ItemsSource="{d:SampleData ItemCount=5}" Margin="31,77,50,225">
+        <TextBox x:Name="question_add_btn" TextWrapping="Wrap" Text="추가할 단어" Width="120" Margin="209,270,471,84" Height="80" />
+        <Button x:Name="word_add" Content="단어 추가" Margin="496,270,0,0" Click="Button_Click" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Height="80"/>
+        <Button Content="미리보기" Margin="0,270,0,0" Click="Button_Click_1" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <TextBox x:Name="testbox" TextWrapping="Wrap" Text="문제관리 창" Margin="73,0,94,362" />
+        <ListView x:Name="question_listview" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="31,77,50,225">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="단어" Width="100"/>
-                    <GridViewColumn Header="뜻"/>
+                    <GridViewColumn Header="단어" DisplayMemberBinding="{Binding word}" Width="100"/>
+                    <GridViewColumn Header="뜻" DisplayMemberBinding="{Binding meaning}"/>
                 </GridView>
             </ListView.View>
         </ListView>

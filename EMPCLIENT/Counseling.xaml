@@ -21,7 +21,7 @@
             </ListView.View>
         </ListView>-->
         <TextBox x:Name="keyword" TextWrapping="Wrap" Text="상담키워드 입력" Margin="101,692,316,64"/>
-        <Button x:Name="keyword_buton" Content="상담키워드 " Margin="250,689,146,64" Click="keyword_buton_Click"/>
+        <Button x:Name="keyword_buton" Content="상담키워드 " Margin="250,689,146,64" />
 
     </Grid>
 </Window>

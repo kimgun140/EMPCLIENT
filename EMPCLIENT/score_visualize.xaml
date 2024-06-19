@@ -12,7 +12,7 @@
         <live:CartesianChart x:Name="Chart1"
     BorderBrush="Black" BorderThickness="2"
     LegendLocation="Top"
-    Margin="10,260,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="164" Width="247">
+    Margin="10,24,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="168" Width="374">
             <live:CartesianChart.AxisY>
                 <live:Axis MinValue="0" MaxValue="100"/>
             </live:CartesianChart.AxisY>
@@ -21,12 +21,14 @@
             </live:CartesianChart.AxisX>
             <live:CartesianChart.Series>
 
-                <live:LineSeries Stroke="Red" Title="Cpu" Values="{Binding C_Chart}"/>
+                <live:LineSeries Stroke="Red" Title="Score" Values="{Binding C_Chart}"/>
 
 
 
             </live:CartesianChart.Series>
         </live:CartesianChart>
+        <Button Content="Button" Margin="575,331,78,36" ButtonBase.Click="Button_Click"/>
+        <TextBox TextWrapping="Wrap" Text="TextBox" Width="120" Margin="373,338,307,42"/>
 
     </Grid>
 </Window>

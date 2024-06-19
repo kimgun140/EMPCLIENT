@@ -50,67 +50,36 @@ namespace EMPCLIENT
                 mainWindow.Height = 1000; // 원하는 높이로 설정
             }
             InitializeComponent();
+            byte[] data;
+            string msg = "상담";
+            data = null;
+            data = Encoding.UTF8.GetBytes(msg);
+            stream.Write(data, 0, data.Length);
+            //InitializeComponent();
             txtbox_chat1.Text = "고객과의 연결을 대기합니다.";
             Task.Run(() => Wait_cc());
         }
         public void Wait_cc() //Task 함수 (서버에선 고객 대기방 함수)
         {
-            List<cc_info> infos = new List<cc_info>();
-            cc_info info = new cc_info();
-
-
-            //NetworkStream stream = login_Page.client.GetStream();
-
-
             byte[] data1 = new byte[256];
             int bytes = stream.Read(data1, 0, data1.Length);//받는 데이터의 바이트배열, 인덱스, 길이
             string responses = Encoding.UTF8.GetString(data1, 0, bytes);
-            Console.WriteLine(responses);
-            info.CCNUM = responses;
-
-            data1 = new byte[256];
-            bytes = stream.Read(data1, 0, data1.Length);//받는 데이터의 바이트배열, 인덱스, 길이
-            responses = Encoding.UTF8.GetString(data1, 0, bytes);
-            Console.WriteLine(responses);
-            info.NAME = responses;
-
-            data1 = new byte[256];
-            bytes = stream.Read(data1, 0, data1.Length);//받는 데이터의 바이트배열, 인덱스, 길이
-            responses = Encoding.UTF8.GetString(data1, 0, bytes);
-            Console.WriteLine(responses);
-            info.ID = responses;
-
-            //infos.Add(info);
-            //Dispatcher.BeginInvoke(new Action(() =>
-            //{
-            //    liv_info.ItemsSource = infos;
-            //    liv_info.Items.Refresh();
-            //}));
-
-
-
-            data1 = new byte[256];
-            bytes = stream.Read(data1, 0, data1.Length);//받는 데이터의 바이트배열, 인덱스, 길이
-            responses = Encoding.UTF8.GetString(data1, 0, bytes);
             Console.WriteLine($"responses: {responses}");
-
             if (responses == "채팅가능")
             {
+                //data = null;
+                //data = Encoding.UTF8.GetBytes(responses);
+                //stream.Write(data, 0, data.Length);
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     txtbox_send1.IsReadOnly = false;
-                    txtbox_chat1.Text = null;
-
+                    txtbox_chat1.Text = " ";
                 }));
                 Task.Run(() => Read_Chat());
             }
-
         }
-
         public void Read_Chat()
         {
-            NetworkStream stream = MainPage.client.GetStream();
-
             while (true)
             {
                 byte[] recv_data = new byte[300];
@@ -124,15 +93,14 @@ namespace EMPCLIENT
         }
         void txtbox_send1_KeyUp(object sender, KeyEventArgs e)
         {
+            byte[] data;
             if (e.Key == Key.Enter)
             {
-                string send_message = txtbox_send1.Text;
+                string send_message = "[상담사]: "+ txtbox_send1.Text;
                 if (!string.IsNullOrEmpty(send_message))
                 {
                     // 기존 텍스트에 새 메시지를 추가합니다.
                     //txtbox_chat1.Text += send_message + "\n";
-
-                    byte[] data ;
                     data = null;
                     data = Encoding.UTF8.GetBytes(send_message);
                     stream.Write(data, 0, data.Length);
@@ -141,29 +109,6 @@ namespace EMPCLIENT
                     // 스크롤을 맨 아래로 이동
                     txtbox_chat1.ScrollToEnd();
                 }
-            }
-        }
-
-        private void keyword_buton_Click(object sender, RoutedEventArgs e)
-        {
-
-            string send_message = "keyword_token";
-            byte[] data;
-            data = null;
-            data = Encoding.UTF8.GetBytes(send_message);
-            stream.Write(data, 0, data.Length);
-            Thread.Sleep(100);
-
-            send_message = keyword.Text;
-            if (!string.IsNullOrEmpty(send_message))
-            {
-                // 기존 텍스트에 새 메시지를 추가합니다.
-                //txtbox_chat1.Text += send_message + "\n";
-                data = null;
-                data = Encoding.UTF8.GetBytes(send_message);
-                stream.Write(data, 0, data.Length);
-                keyword.Text = "키워드 입력완료";
-
             }
         }
 

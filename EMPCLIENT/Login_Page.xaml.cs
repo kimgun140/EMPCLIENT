@@ -77,11 +77,11 @@ namespace EMPCLIENT
                 int bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
                 string responses = Encoding.UTF8.GetString(data, 0, bytes);
                 MessageBox.Show(responses);
-                if (responses == "로그인 되었습니다.\n")
+                if (responses == "로그인 되었습니다")
                 {
-                    MessageBox.Show("responses");
+                    //MessageBox.Show("responses");
                     NavigationService.Navigate(
-                    new Uri("/EmpMainaPge.xaml", UriKind.Relative));
+                    new Uri("/EmpMainPage.xaml", UriKind.Relative));
             
                 }
 

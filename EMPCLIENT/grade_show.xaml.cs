@@ -34,7 +34,7 @@ namespace EMPCLIENT
             public string ID { get; set; }
             public string SCORE { get; set; }
 
-            public string date { get; set; }// 
+            public string date { get; set; } 
 
         }
 

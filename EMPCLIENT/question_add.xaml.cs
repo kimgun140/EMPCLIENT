@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.TeamFoundation.Common.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -24,17 +26,30 @@ namespace EMPCLIENT
     /// </summary>
     public partial class question_add : Window
     {
+        List<MyData> data = new List<MyData>();
         public question_add()
         {
             InitializeComponent();
+            //NativeMethods.AllocConsole();
+
+
+
+        }
+        static class NativeMethods
+        {
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool AllocConsole();
         }
 
+
+        List<MyData> myDatas = new List<MyData>();
         public class MyData
         {
             public string word { get; set; }
             public string meaning { get; set; }
         }
-        List<MyData> data_list ;
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -42,13 +57,21 @@ namespace EMPCLIENT
             //question_add.Text;
 
             // 문제추가 시그널 보내기
-            string send_message = "문제추가";
-
+            string send_message = "문제관리";
             byte[] data;
             data = null;
             data = Encoding.UTF8.GetBytes(send_message);
             stream.Write(data, 0, data.Length);
             Thread.Sleep(100);
+
+
+            send_message = "";
+            send_message = "추가";
+            data = null;
+            data = Encoding.UTF8.GetBytes(send_message);
+            stream.Write(data, 0, data.Length);
+            Thread.Sleep(100);
+
             send_message = question_add_btn.Text;
             if (!string.IsNullOrEmpty(send_message))
             {
@@ -64,68 +87,93 @@ namespace EMPCLIENT
                 //data = Encoding.UTF8.GetBytes(send_message);
                 //stream.Write(data, 0, data.Length);
 
-
             }
+            //send_message = "데이터전송완료";
+            //data = null;
+            //data = Encoding.UTF8.GetBytes(send_message);
+            //stream.Write(data, 0, data.Length);
+            //Thread.Sleep(100);
+
 
         }
-
+        public void Quest_(JToken obj)
+        {
+            if (obj != null)
+            {
+                foreach (var ans_ in obj)
+                {
+                    MyData myData = new MyData(); //객체를 계속 만들어줘야함
+                    myData.word = ans_["Keyword"].ToString();
+                    myData.meaning = ans_["Answer"].ToString().Replace('\n', ' ') + '\n';
+                    //addstring = ques.Qus_key + ques.Qus_ans;
+                    myDatas.Add(myData);
+                }
+            }
+        }
         private void Button_Click_1(object sender, RoutedEventArgs e) // 미리보기 버튼 
         {
             NetworkStream stream = MainPage.client.GetStream();
-            string send_message = "문제미리보기";
+            // 서버에 문제관리 시그널 보내기 
+            string send_message = "문제관리";
             byte[] data;
             data = null;
             data = Encoding.UTF8.GetBytes(send_message);
             stream.Write(data, 0, data.Length);
             Thread.Sleep(100);
+            send_message = "미리보기";
+
+            data = null;
+            data = Encoding.UTF8.GetBytes(send_message);
+            stream.Write(data, 0, data.Length);
+            Thread.Sleep(100);
+
+
             send_message = question_add_btn.Text; // 추가할 문제 검색어 
             if (!string.IsNullOrEmpty(send_message))
             {
-                // 추가할 문자 검색어  보내기
+                //  문자 검색어  보내기
                 data = null;
-                data = Encoding.UTF8.GetBytes(send_message);
-                stream.Write(data, 0, data.Length);
+                data = Encoding.UTF8.GetBytes(send_message); //검색어 변환
+                stream.Write(data, 0, data.Length); // 검색어 보내기 
                 Thread.Sleep(100);
 
             }
+
+
+
+
+            MyData myData = new MyData();
             data = null;
-            data = new byte[300];
+            data = new byte[2000];
             string responses = "";
+            int bytes = stream.Read(data, 0, data.Length);
+            responses = Encoding.UTF8.GetString(data, 0, bytes);
+            testbox.Text = responses + "\n";
+            Console.WriteLine(responses);
+
+            Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(responses);
 
 
-            while (true)
+            if (dictionary != null)
             {
-                MyData myData = new MyData();
+                //MyData quest_data = new MyData();
+                foreach (var kvp in dictionary)
+                {
+                    MyData quest_data = new MyData();
+                    quest_data.word = kvp.Key;
+                    quest_data.meaning = kvp.Value;
+                    myDatas.Add(quest_data);
 
-                int bytes = stream.Read(data, 0, data.Length);
-                responses = Encoding.UTF8.GetString(data, 0, bytes);
-
-                // 여기서 json 형식으로 데이터 받기
-                JObject jObject = JObject.Parse(responses);
-
-                myData.word = responses;
-                myData.meaning = Convert.ToString(jObject[send_message]);
-
-                data_list.Add(myData);
-
-                //Console.WriteLine(send_message); // 검색한 단어
-                //Console.WriteLine(jObject[send_message]); // 검색한 단어의 뜻 
-                //testbox.Text += "검색한 단어:" + responses + "\n";
-                //testbox.Text += "단어의 뜻: " + jObject[send_message] + "\n";
+                }
+                question_listview.ItemsSource = myDatas;
+                question_listview.Items.Refresh();
+            }else
+            {
+                MessageBox.Show("검색어를 정확히 입력해주세요!");
             }
 
 
-            //JArray jArray = (JArray)jObject["realtimePositionList"];
 
-            //if (jArray != null)
-            //{
-            //    foreach (JObject item in jArray)
-            //    {
-
-            //        testbox.Text = Convert.ToString(item[0]);
-
-            //    }
-            //}
 
         }
 
