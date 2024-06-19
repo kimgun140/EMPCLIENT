@@ -133,6 +133,15 @@ namespace EMPCLIENT
             int bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
             string responses = Encoding.UTF8.GetString(data, 0, bytes);
 
+
+
+            string[] words = responses.Split(','); // 문자열을 ,를 구분자로 잘라서 배열에 담기 
+            for (int i = 0; i < words.Length; i++)
+            {
+                C_Chart.Add(int.Parse(words[i]));// 공백제거 
+
+            }
+            
             //await Dispatcher.BeginInvoke(new Action(() =>
             //{
             //    for (int i = 0; i < 100; i++)
@@ -141,11 +150,27 @@ namespace EMPCLIENT
             //        C_Chart.Add(Convert.ToInt32(testvalue));
 
             //    }
-            //    //C_Chart = null;
-            //    //ChartValues<double> value = new ChartValues<double>{1, 2, 3, 4, 5};
-            //    //C_Chart.Add(Convert.ToInt32(value));
 
             //}));
+
+
+            while (true)
+            {
+                if (responses != "전송종료")
+                {
+                    data = null;
+                    data = new byte[256];
+                    bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
+                    responses = Encoding.UTF8.GetString(data, 0, bytes);
+                }
+                else
+                {
+                    break;
+                }
+
+            }
+
+           
         }
 
         private void Button_Click(object sender, object e)

@@ -152,6 +152,8 @@ namespace EMPCLIENT
             Console.WriteLine(responses);
 
             Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(responses);
+            //myData = JsonConvert.DeserializeObject<MyData>(responses); 이것도 되나? 
+
 
 
             if (dictionary != null)
