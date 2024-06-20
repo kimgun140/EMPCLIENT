@@ -1,7 +1,9 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf.Charts.Base;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -12,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -25,12 +28,19 @@ namespace EMPCLIENT
     {
 
         public ChartValues<double> C_Chart { get; set; }
+        public string[] XLabel { get; set; }
 
-
+        public class question_history
+        {
+            public string ID { get; set; }
+            public string SCORE { get; set; }
+        }
+        List<question_history> question_Histories = new List<question_history>();
         public score_visualize()
         {
             InitializeComponent();
             C_Chart = new ChartValues<double>();
+            XLabel = new string[] { };
 
             Chart1.DataContext = this;
 
@@ -82,7 +92,7 @@ namespace EMPCLIENT
             }
 
             ));
-           
+
 
 
 
@@ -104,6 +114,16 @@ namespace EMPCLIENT
 
                 }));
         }
+
+        public void read_msg()
+        {
+            NetworkStream stream = MainPage.client.GetStream();
+            byte[] data;
+            data = null;
+            data = new byte[256];
+            int bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
+            string responses = Encoding.UTF8.GetString(data, 0, bytes);
+        }
         async public void charttest(string User_id)
         {
             NetworkStream stream = MainPage.client.GetStream();
@@ -113,35 +133,70 @@ namespace EMPCLIENT
             byte[] data;
             data = null;
             data = new byte[256];
-            send_msg = "차트";// 시그널
+            send_msg = "그래프보기";// 시그널
             data = Encoding.UTF8.GetBytes(send_msg);
             stream.Write(data, 0, data.Length);//전송할 데이터의 바이트 배열, 전송을 시작할 배열의 인덱스, 전송할 데이터의 길이.
             Thread.Sleep(100);
             send_msg = "";
 
-            send_msg = User_id;
-            data = null;
-            data = new byte[256];
-            data = Encoding.UTF8.GetBytes(send_msg); // 그래프를 그릴 유저의 성적 요청 위해서 유저아이디 전송 
-            stream.Write(data, 0, data.Length);//전송할 데이터의 바이트 배열, 전송을 시작할 배열의 인덱스, 전송할 데이터의 길이.
-            Thread.Sleep(100);
-
 
             // 데이터 받기 
-            data = null;
-            data = new byte[256];
-            int bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
-            string responses = Encoding.UTF8.GetString(data, 0, bytes);
-
-
-
-            string[] words = responses.Split(','); // 문자열을 ,를 구분자로 잘라서 배열에 담기 
-            for (int i = 0; i < words.Length; i++)
+            await Dispatcher.BeginInvoke(new Action(() =>
             {
-                C_Chart.Add(int.Parse(words[i]));// 공백제거 
+                while (true)
+                {
+                    data = null;
+                    data = new byte[256];
+                    int bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
+                    string responses = Encoding.UTF8.GetString(data, 0, bytes);
+                    testblock.Text += responses + "\n";
+                    if (responses == "전송완료")
+                    {
+                        break;
+                    }
+                    // 여러명이 오는데 그걸 받기는 할 수 있어 그러면 키값으로 찾아서 각각의 학생을 구분해야함 흐음 흠터레스팅 
+                    // 여러명 와서 딕셔너리에 담아주고 내가 보여주고 사람것만 보여주면 되잖아 맞지? 맞아요~ 그러면 키값 비교만해서 내가 찾는 사람의  것만 받으면 되겠네 
+                    // 그것만 차트에 넣어주면 굳 굳굳  근데 어케함 ㅋ
+                    Dictionary<string, string> dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(responses);
+                    // 우선 딕셔너리로 데이터 변환 함 이거
+                    Dispatcher.BeginInvoke(new Action(() => // 
+                    {
+                        if (dictionary != null)
+                        {
+                            //MyData quest_data = new MyData();
+                            foreach (var kvp in dictionary)
+                            {
+                                question_history quest_data = new question_history();
+                                if (kvp.Key == User_id)
+                                {  // 키 값이랑 받으면 되겠네 
+                                    quest_data.ID = kvp.Key;
+                                    quest_data.SCORE = kvp.Value;
+                                    C_Chart.Add(int.Parse(kvp.Value));// 차트에 넣기  
+                                                                      //cc_info_List.Add(quest_data);
+                                    question_Histories.Add(quest_data);// 받아서 리스트에 넣어주고 있음 그러면 여기서 전체 리스트의 리스트뷰에 넣어주기
+                                   
+                                }
 
-            }
-            
+                            }
+                            testlistview.ItemsSource = question_Histories; // 
+                            testlistview.Items.Refresh();
+
+                        }
+                    }));
+
+                }
+            }));
+
+            //await Dispatcher.BeginInvoke(new Action(() =>
+            //{
+            //    string[] words = responses.Split(','); // 문자열을 ,를 구분자로 잘라서 배열에 담기 
+            //    for (int i = 0; i < words.Length; i++) // 쪼개긴 점수 배열의 하나씩 넣어주기 
+            //    {
+            //        C_Chart.Add(int.Parse(words[i]));//  
+
+            //    }
+            //}));
+
             //await Dispatcher.BeginInvoke(new Action(() =>
             //{
             //    for (int i = 0; i < 100; i++)
@@ -154,28 +209,35 @@ namespace EMPCLIENT
             //}));
 
 
-            while (true)
-            {
-                if (responses != "전송종료")
-                {
-                    data = null;
-                    data = new byte[256];
-                    bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
-                    responses = Encoding.UTF8.GetString(data, 0, bytes);
-                }
-                else
-                {
-                    break;
-                }
+            //while (true) // 여러번 받기
+            //{
+            //    data = null;
+            //    data = new byte[256];
+            //    bytes = stream.Read(data, 0, data.Length);//받는 데이터의 바이트배열, 인덱스, 길이
+            //    responses = Encoding.UTF8.GetString(data, 0, bytes);
+            //    if (responses == "전송종료")
+            //    {
+            //        break;
+            //    }
+            //    await Dispatcher.BeginInvoke(new Action(() =>
+            //    {
+            //        C_Chart.Add(int.Parse(responses));//
+            //    }));
 
-            }
 
-           
+
+            //}
+
+
         }
 
         private void Button_Click(object sender, object e)
         {
-            testgraph();
+            //testgraph();
+            string user_id = User_id.Text;
+            charttest(user_id);
+            //User_id = null;
+
         }
     }
 }

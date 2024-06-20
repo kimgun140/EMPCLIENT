@@ -17,18 +17,27 @@
                 <live:Axis MinValue="0" MaxValue="100"/>
             </live:CartesianChart.AxisY>
             <live:CartesianChart.AxisX>
-                <live:Axis Labels="01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12"/>
+                <!--<live:Axis Labels="01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12"/>-->
+                <live:Axis MinValue="0" MaxValue="10" />
+
             </live:CartesianChart.AxisX>
             <live:CartesianChart.Series>
 
                 <live:LineSeries Stroke="Red" Title="Score" Values="{Binding C_Chart}"/>
 
-
-
             </live:CartesianChart.Series>
         </live:CartesianChart>
         <Button Content="Button" Margin="575,331,78,36" ButtonBase.Click="Button_Click"/>
-        <TextBox TextWrapping="Wrap" Text="TextBox" Width="120" Margin="373,338,307,42"/>
+        <TextBox x:Name="User_id" TextWrapping="Wrap" Text="TextBox" Width="120" Margin="373,338,307,42"/>
+        <TextBlock x:Name="testblock" TextWrapping="Wrap" Text="TextBlock" Margin="433,69,27,242"/>
+        <ListView x:Name="testlistview" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,225,472,78">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="ID" />
+                    <GridViewColumn Header="SCORE"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
     </Grid>
 </Window>

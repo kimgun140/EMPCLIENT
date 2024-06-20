@@ -24,10 +24,12 @@ namespace EMPCLIENT
     /// </summary>
     public partial class MainPage : Page
     {
-        //public static TcpClient client = new TcpClient("10.10.21.109", 5017);
-        public static TcpClient client = new TcpClient("10.10.21.111", 7990);
+        public static TcpClient client = new TcpClient("10.10.21.118", 5004);
 
-        
+        //public static TcpClient client = new TcpClient("10.10.21.109", 5017);
+        //public static TcpClient client = new TcpClient("10.10.21.111", 7997);
+
+
 
         public MainPage()
         {

@@ -30,6 +30,7 @@ namespace EMPCLIENT
     {
         public string CCNUM { get; set; }
         public string NAME { get; set; }
+        public string SCORE {  get; set; }
         public string ID { get; set; }
 
     }

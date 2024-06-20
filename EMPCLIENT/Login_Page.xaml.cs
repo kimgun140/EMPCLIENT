@@ -100,7 +100,7 @@ namespace EMPCLIENT
         private void btn_login_Click(object sender, RoutedEventArgs e)
         {
 
-            string pw = MyTextBoxpw.Text.ToUpper();
+            string pw = MyTextBoxpw.Password.ToUpper();
             string id = MyTextBoxid.Text.ToUpper();
 
             CS_login(id, pw);
@@ -125,7 +125,7 @@ namespace EMPCLIENT
 
         private void MyTextBoxpw_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (MyTextBoxpw.Text == "PassWord")
+            if (MyTextBoxpw.Password == "PassWord")
             {
                 MyTextBoxpw.Clear();
             }
@@ -141,9 +141,9 @@ namespace EMPCLIENT
 
         private void MyTextBoxpw_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (MyTextBoxpw.Text == "")
+            if (MyTextBoxpw.Password == "")
             {
-                MyTextBoxpw.Text = "PassWord";
+                MyTextBoxpw.Password = "PassWord";
             }
         }
 
